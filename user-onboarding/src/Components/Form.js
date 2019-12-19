@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withFormik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 
 
-const UserForm = ({ values, errors, touched }) => {
-    const [users, setUser] = useState([]);
+const UserForm = ({ values, errors, touched, status }) => {
+    const [users, setUsers] = useState([]);
+
+    useEffect(() =>
+    {
+        status && setUsers(users => [...users, status]);
+    }, [status])
+    
     return (
         <div className='User-Form'>
             <Form>
@@ -23,7 +29,6 @@ const UserForm = ({ values, errors, touched }) => {
 
                 <label htmlFor='tos'>Check to accept the Terms of Service</label>
                 <Field id='tos' type='checkbox' name='tos' checked={values.tos} />
-                {touched.tos && errors.tos && (<p className='errors'>{errors.tos}</p>)}
 
                 <button type='submit'>Submit</button>
             </Form>
@@ -31,9 +36,8 @@ const UserForm = ({ values, errors, touched }) => {
             {users.map(user => (
                 <div className='user-list'>
                     <p>Name: {user.name}</p>
-                    <p>password: {user.password}</p>
-                    <p>email: {user.password}</p>
-                    <p>Terms of Service: {user.tos}</p>
+                    <p>email: {user.email}</p>
+                    <p>Terms of Service: {user.tos.toString()}</p>
                 </div>
             ))}
         </div>
@@ -51,17 +55,17 @@ const FormikUserForm = withFormik
             };
         },
         validationSchema: Yup.object().shape({
-            name: Yup.string().required(),
-            email: Yup.string().email().required(),
-            password: Yup.string().required(),
-            tos: Yup.boolean()
+            name: Yup.string().required("Please enter your name"),
+            email: Yup.string().email().required("Please enter your email"),
+            password: Yup.string().required("Plese enter a password"),
         }),
 
-        handleSubmit(values, formikBag) {
+        handleSubmit(values, {setStatus, resetForm}) {
             axios.post('https://reqres.in/api/users', values)
                 .then(response => {
-                    console.log('success: ', response.data);
-
+                    setStatus(response.data);
+                    console.log(response.data);
+                    resetForm();
                 })
                 .catch(err => {
                     console.log("OOPS something went wrong", err);
