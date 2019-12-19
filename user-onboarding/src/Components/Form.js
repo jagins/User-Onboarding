@@ -7,11 +7,10 @@ import axios from 'axios';
 const UserForm = ({ values, errors, touched, status }) => {
     const [users, setUsers] = useState([]);
 
-    useEffect(() =>
-    {
+    useEffect(() => {
         status && setUsers(users => [...users, status]);
     }, [status])
-    
+
     return (
         <div className='User-Form'>
             <Form>
@@ -34,7 +33,7 @@ const UserForm = ({ values, errors, touched, status }) => {
             </Form>
 
             {users.map(user => (
-                <div className='user-list'>
+                <div className='user-list' key={Date.now()}>
                     <p>Name: {user.name}</p>
                     <p>email: {user.email}</p>
                     <p>Terms of Service: {user.tos.toString()}</p>
@@ -60,7 +59,7 @@ const FormikUserForm = withFormik
             password: Yup.string().required("Plese enter a password"),
         }),
 
-        handleSubmit(values, {setStatus, resetForm}) {
+        handleSubmit(values, { setStatus, resetForm }) {
             axios.post('https://reqres.in/api/users', values)
                 .then(response => {
                     setStatus(response.data);
