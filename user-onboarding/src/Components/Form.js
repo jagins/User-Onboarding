@@ -43,6 +43,11 @@ const FormikUserForm = withFormik
             email: Yup.string().email().required(),
             password: Yup.string().required(),
             tos: Yup.boolean()
-        })
+        }),
+        
+        handleSubmit(values, formikBag)
+        {
+            console.log('submitting: ', values);
+        }
     })(UserForm);
 export default FormikUserForm;
