@@ -1,9 +1,8 @@
 import React from 'react';
 import {withFormik} from 'formik';
 
-function Form()
-{
+const UserForm = ({
+})
 
-}
-
-export default Form;
+const FormikUserForm = withFormik(UserForm);
+export default FormikUserForm;
