@@ -1,5 +1,6 @@
 import React from 'react';
-import {withFormik, Form, Field} from 'formik';
+import {withFormik, Form, Field, yupToFormErrors} from 'formik';
+import * as Yup from 'yup';
 
 const UserForm = ({values, handleChange}) =>
 {
@@ -29,11 +30,17 @@ const FormikUserForm = withFormik
     mapPropsToValues({name, email, password, tos})
     {
         return {
-            name: '',
-            email: '',
-            password: '',
-            tos: false
-        }
-    }
+            name: name || '',
+            email: email || '',
+            password: password || '',
+            tos: tos || false
+        };
+    },
+    validationSchema: Yup.object().shape({
+        name: Yup.string().required(),
+        email: Yup.string.email().required(),
+        password: Yup.string.required(),
+        tos: Yup.boolean()
+    })
 })(UserForm);
 export default FormikUserForm;
